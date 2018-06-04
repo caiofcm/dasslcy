@@ -1,3 +1,0 @@
-LIBRARY dasslc-cpython-35m.dll
-EXPORTS
-PyInit_dasslc
