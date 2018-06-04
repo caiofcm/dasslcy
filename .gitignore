@@ -1,6 +1,7 @@
 # CFCM
 vscode/
 dasslc/
+dasslc.c
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

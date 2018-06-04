@@ -20,7 +20,8 @@ def configuration(parent_package='', top_path=None):
                          sources=['cython_wrapper.pyx'],
                          # libraries=['m'],
                          depends=['c_code.c'],
-                         include_dirs=[numpy.get_include()])
+                         include_dirs=[numpy.get_include()],
+                         extra_compile_args=['-std=c11'])
     return config
 
 
