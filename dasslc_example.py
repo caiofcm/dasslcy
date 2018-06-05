@@ -130,7 +130,7 @@ def model3(t, y, yp, par):  # ----------- The parameter may be a whole class
 
 
 ######################################## Solve model0 ##############################################
-
+print('------- Solve model0  ---------- ')
 # ---------------------- Integration interval with initial and final time
 t0 = np.array([0.0, 1.0])
 y0 = np.array([1.0])  # ---------------------- Initial condition
@@ -151,6 +151,7 @@ plt.ylabel('yp')
 
 
 ######################################### Solve model1 #############################################
+print('------- Solve model1  ---------- ')
 
 # ----------------#| The time span can also be a vector.
 t0 = np.linspace(0.0, 1.0, 100)
@@ -172,6 +173,7 @@ plt.title('Model1 Solution')
 plt.legend([l1, l2], ["y1", "y2"])
 
 ######################################### Solve model2 #############################################
+print('------- Solve model2  ---------- ')
 
 # ------------#| You can also specify only the final time.
 t0 = np.array([500.0])
@@ -196,32 +198,33 @@ plt.title('Model2 Solution')
 plt.legend([l1, l2, l3], ["Ca", "Cb", "Cc"])
 
 
-# ######################################### Solve model3 #############################################
+######################################### Solve model3 #############################################
+print('------- Solve model3  ---------- ')
 
-# class pend_par:  # ----------------#|
-#     g = 9.81  # | Defining the parameter class for
-#     L = 1.0  # | the pendulum model
-#     dae = 3  # |
+class pend_par:  # ----------------#|
+    g = 9.81  # | Defining the parameter class for
+    L = 1.0  # | the pendulum model
+    dae = 3  # |
 
 
-# t0 = np.linspace(0, 50, 10000)
-# y0 = np.array([1, 0, 0, 0, 0])
-# yp0 = None
-# par = pend_par()  # ----------------- The optional parameter class initialization
-# atol = 1e-10
-# rtol = 1e-8
-# # ---- The dependent variable index vector (needed for high index DAE)
-# index = np.array([1, 1, 2, 2, 3])
+t0 = np.linspace(0.0, 50.0, 10000.0)
+y0 = np.array([1.0, 0.0, 0.0, 0.0, 0.0])
+yp0 = None
+par = pend_par()  # ----------------- The optional parameter class initialization
+atol = 1e-10
+rtol = 1e-8
+# ---- The dependent variable index vector (needed for high index DAE)
+index = np.array([1, 1, 2, 2, 3])
 
-# t, y, yp = dasslc.solve(model3, t0, y0, yp0, par, rtol, atol, index)
+t, y, yp = dasslc.solve(model3, t0, y0, yp0, par, rtol, atol, index)
 
-# # Plot results
-# plt.figure(4)
-# l1, l2, l3, l4, l5 = plt.plot(t, y)
-# plt.ylabel('y')
-# plt.xlabel('time')
-# plt.title('Model3 Solution')
-# plt.legend([l1, l2, l3, l4, l5], ["x", "y", "vx", "vy", "mu"])
+# Plot results
+plt.figure(4)
+l1, l2, l3, l4, l5 = plt.plot(t, y)
+plt.ylabel('y')
+plt.xlabel('time')
+plt.title('Model3 Solution')
+plt.legend([l1, l2, l3, l4, l5], ["x", "y", "vx", "vy", "mu"])
 
 ## Show all figures
 plt.show()
