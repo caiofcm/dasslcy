@@ -1,5 +1,3 @@
-# distutils: sources = dasslc/dasslc.c
-# distutils: include_dirs = dasslc/
 
 #cython: boundscheck=False
 #cython: wraparound=False
