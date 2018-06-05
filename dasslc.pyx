@@ -1,6 +1,9 @@
 # distutils: sources = dasslc/dasslc.c
 # distutils: include_dirs = dasslc/
 
+#cython: boundscheck=False
+#cython: wraparound=False
+
 # TODO Accept np.array([1, 0]) with int and convert to float inside solve function
 
 import numpy as np
@@ -10,19 +13,6 @@ cimport dasslc_def
 np.import_array()
 
 cdef object pyres
-
-cpdef hello(double tf):
-    print('hello {}'.format(tf))
-
-cdef int eval_residual_function(void* context, double tf):
-    try:
-        # recover Python function object from void* argument
-        func = <object>context
-        # call function, convert result into 0/1 for True/False
-        return func(tf)
-    except:
-        # catch any Python errors and return error indicator
-        return -1
 
 cdef dasslc_def.BOOL residuals(dasslc_def.PTR_ROOT *root, 
                                 dasslc_def.REAL t, dasslc_def.REAL *y, 
@@ -62,9 +52,6 @@ cdef dasslc_def.BOOL residuals(dasslc_def.PTR_ROOT *root,
     # print('res={} and py_calc_res[0]={}'.format(res[0], res_view[0]))
     ires = 0
     return ires
-
-def call_res(residual_function, tf):
-    return eval_residual_function(<void*> residual_function, tf)
 
 def solve(resfun, np.float64_t[:] tspan, np.float64_t[:] y0, 
                     np.float64_t[:] yp0 = None, rpar=None, rtol=1e-6, 

@@ -2,11 +2,14 @@
 
 This is a simple wrapper for using the "Differential-Algebraic System Solver in C" by Argimiro R. Secchi (PEQ/COPPE/UFRJ) in python3 using Cython.
 
+And an alternative wrapper based on the Python/C-API wrapper from [dasslc2py](https://www.enq.ufrgs.br/enqlib/numeric/)
+
 ## Getting Started
 
 All the information about the usage of this package can be found in example file
+
 ```
-Dasslc2py/dasslc_examples.py
+dasslc_examples.py
 ```
 
 ### Prerequisites
@@ -19,17 +22,18 @@ Dasslc2py/dasslc_examples.py
 In order to locally build this module, open a terminal at the dir **Dasslc2py** and run the following command
 
 ```
-python2 setup.py build_ext --inplace
+python setup.py build_ext --inplace
 ```
 
 Instead, if you want to install it along with your python distribution, run (as root)
 ```
-python2 setup.py install
+python setup.py install
 ```
 
 ## Author
 
-* **Ataíde Neto** - ataide@peq.coppe.ufrj.br
+- Caio Marcellos
+- Author of Python/C-Api Wrapper: **Ataíde Neto** - ataide@peq.coppe.ufrj.br
 
 [python-mingw]: https://stackoverflow.com/questions/41932407/which-python-should-i-install-and-how-when-using-msys2
 
