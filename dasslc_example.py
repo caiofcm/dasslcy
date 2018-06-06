@@ -1,52 +1,3 @@
-# import numpy as np
-# import dasslc
-# import matplotlib.pyplot as plt
-
-# # pylint: disable=maybe-no-member
-
-# #################################### Defining the residual functions ###############################
-
-
-# def model0(t, y, yp):  # --------------- Minimum of 3 input arguments
-#     # ------------- Always allocate res as a numpy array, even if it has len = 1.
-#     res = np.empty(1)
-#     res[0] = yp[0] + 2*y[0]  # ------- Declare the residual
-#     ires = 0  # ---------------------- Set ires = 0 if everything is ok
-#     # -------------- Beware: ires must always be returned as second output.
-#     return res, ires
-
-# # y0 = np.array([1.0])  # ------------------ Initial condition
-# # # ------------------ Derivatives at initial condition (optional)
-# # yp0 = np.array([1.0])
-# # tsp = np.array([0.0, 1.0])
-
-# ######################################## Solve model0 ##############################################
-
-# # ---------------------- Integration interval with initial and final time
-# t0 = np.array([0.0, 1.0]) #TODO Allow int declaration and convert inside
-# y0 = np.array([1.0])  # ---------------------- Initial condition
-
-# t, y, yp = dasslc.solve(model0, t0, y0)  # ---#| The simplest call to dasslc,
-# #| with all the mandatory inputs and outputs.
-# #| y and yp are equally spaced in all time span
-# # Plot results
-# plt.figure(1)
-# plt.subplot(211)
-# plt.plot(t, y)
-# plt.ylabel('y')
-# plt.title('Model0 Solution')
-# plt.subplot(212)
-# plt.plot(t, yp)
-# plt.xlabel('time')
-# plt.ylabel('yp')
-
-
-# # print('call with numpy array')
-# # dasslc.solve(model0, tsp, y0)
-
-# plt.show()
-
-
 ####################################################################################################
 #                                                                                                  #
 #                       This is a template for the dasslc module in python2.                       #
@@ -62,9 +13,16 @@
 ### call: t,  y, yp = dasslc.solve (resfun, tspan, y0, yp0, rpar, rtol, atol,  index)
 
 ## Import the modules
-import dasslc
 import numpy as np
-import matplotlib.pyplot as plt
+try:
+    import matplotlib.pyplot as plt
+    has_plt = True
+except ImportError:
+    has_plt = False
+import dasslc
+#from dasslc_cy_wrapper import dasslc_wrapper
+
+# TODO parei aqui como fazer o setuptools com module unico chamado dasslc apenas ...
 
 
 #################################### Defining the residual functions ###############################
@@ -139,15 +97,17 @@ t, y, yp = dasslc.solve(model0, t0, y0)  # ---#| The simplest call to dasslc,
 #| with all the mandatory inputs and outputs.
 #| y and yp are equally spaced in all time span
 # Plot results
-plt.figure(1)
-plt.subplot(211)
-plt.plot(t, y)
-plt.ylabel('y')
-plt.title('Model0 Solution')
-plt.subplot(212)
-plt.plot(t, yp)
-plt.xlabel('time')
-plt.ylabel('yp')
+if has_plt:
+    plt.figure(1)
+    plt.subplot(211)
+    plt.plot(t, y)
+    plt.ylabel('y')
+    plt.title('Model0 Solution')
+    plt.subplot(212)
+    plt.plot(t, yp)
+    plt.xlabel('time')
+    plt.ylabel('yp')
+print('States at final time: {}'.format(y[-1,:]))
 
 
 ######################################### Solve model1 #############################################
@@ -165,12 +125,14 @@ t, y, yp = dasslc.solve(model1, t0, y0, yp0)  # -- Call with the optional yp0
 
 
 # Plot results
-plt.figure(2)
-l1, l2 = plt.plot(t, y)
-plt.ylabel('y')
-plt.xlabel('time')
-plt.title('Model1 Solution')
-plt.legend([l1, l2], ["y1", "y2"])
+if has_plt:
+    plt.figure(2)
+    l1, l2 = plt.plot(t, y)
+    plt.ylabel('y')
+    plt.xlabel('time')
+    plt.title('Model1 Solution')
+    plt.legend([l1, l2], ["y1", "y2"])
+print('States at final time: {}'.format(y[-1, :]))
 
 ######################################### Solve model2 #############################################
 print('------- Solve model2  ---------- ')
@@ -190,13 +152,14 @@ rtol = 1e-6  # ----------------------- The relative tolerance
 t, y, yp = dasslc.solve(model2, t0, y0, yp0, par, rtol, atol)
 
 # Plot results
-plt.figure(3)
-l1, l2, l3 = plt.plot(t, y)
-plt.ylabel('y')
-plt.xlabel('time')
-plt.title('Model2 Solution')
-plt.legend([l1, l2, l3], ["Ca", "Cb", "Cc"])
-
+if has_plt:
+    plt.figure(3)
+    l1, l2, l3 = plt.plot(t, y)
+    plt.ylabel('y')
+    plt.xlabel('time')
+    plt.title('Model2 Solution')
+    plt.legend([l1, l2, l3], ["Ca", "Cb", "Cc"])
+print('States at final time: {}'.format(y[-1, :]))
 
 ######################################### Solve model3 #############################################
 print('------- Solve model3  ---------- ')
@@ -219,12 +182,15 @@ index = np.array([1, 1, 2, 2, 3])
 t, y, yp = dasslc.solve(model3, t0, y0, yp0, par, rtol, atol, index)
 
 # Plot results
-plt.figure(4)
-l1, l2, l3, l4, l5 = plt.plot(t, y)
-plt.ylabel('y')
-plt.xlabel('time')
-plt.title('Model3 Solution')
-plt.legend([l1, l2, l3, l4, l5], ["x", "y", "vx", "vy", "mu"])
+if has_plt:
+    plt.figure(4)
+    l1, l2, l3, l4, l5 = plt.plot(t, y)
+    plt.ylabel('y')
+    plt.xlabel('time')
+    plt.title('Model3 Solution')
+    plt.legend([l1, l2, l3, l4, l5], ["x", "y", "vx", "vy", "mu"])
+print('States at final time: {}'.format(y[-1, :]))
 
 ## Show all figures
-plt.show()
+if has_plt:
+    plt.show()
