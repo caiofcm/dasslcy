@@ -1,27 +1,6 @@
-# from setuptools import setup, find_packages
-# from setuptools.extension import Extension
-# from Cython.Build import cythonize
-
-# extensions = [
-#     Extension(
-#         "dasslc_cy_wrapper.dasslc",
-#         ["dasslc_cy_wrapper/dasslc.pyx", "dasslc/dasslc.c"],
-#         # not needed for fftw unless it is installed in an unusual place
-#         include_dirs=['./dasslc/'],
-#         # libraries=['fftw3', 'fftw3f', 'fftw3l', 'fftw3_threads',
-#         #           'fftw3f_threads', 'fftw3l_threads'],
-#         #library_dirs=['/dasslc/'],  # numpy.get_include()
-#         extra_compile_args=['-std=c11']
-#     ),
-# ]
-
-# setup(
-#     name="dasslc_cy_wrapper",
-#     packages=find_packages(),
-#     ext_modules=cythonize(extensions)
-# )
-
 from setuptools import setup, Extension
+import setuptools.command.build_py
+import subprocess
 from Cython.Distutils import build_ext
 import numpy as np
 
@@ -34,18 +13,32 @@ REQUIRES = ['numpy', 'cython']
 AUTHOR = "Caio Marcellos"
 EMAIL = "caiocuritiba@gmail.com"
 
-LICENSE = "Apache 2.0"
+LICENSE = "MIT"
 
-SRC_DIR = "cython_cy_wrapper"
+SRC_DIR = "dasslcy"
 PACKAGES = [SRC_DIR]
 
+## PRE-INSTALLATION: DOWNLOAD DASSLC
+class BuildPyCommand(setuptools.command.build_py.build_py):
+    """Download dasslc source code before installing dasslcy"""
+
+    def run(self):
+        print("RUNNING SCRIPT to retrieve dasslc source code")
+        subprocess.call(["sh", "./get_dasslc.sh"])
+        setuptools.command.build_py.build_py.run(self)
+
+### EXTENSION
 ext_1 = Extension(SRC_DIR + ".dasslc",
-                  ["/dasslc/dasslc.c", SRC_DIR + "/dasslc.pyx"],
+                  ["./dasslc_base/dasslc.c", SRC_DIR + "/dasslc.pyx"],
                   libraries=[],
                   include_dirs=[np.get_include()])
 
 
 EXTENSIONS = [ext_1]
+
+CMDCLASS = {"build_ext": build_ext,
+            "build_py": BuildPyCommand,
+            }#"develop": CustomDevelopCommand}
 
 if __name__ == "__main__":
     setup(install_requires=REQUIRES,
@@ -58,6 +51,6 @@ if __name__ == "__main__":
           author_email=EMAIL,
           url=URL,
           license=LICENSE,
-          cmdclass={"build_ext": build_ext},
+          cmdclass=CMDCLASS,
           ext_modules=EXTENSIONS
           )

@@ -19,8 +19,8 @@ try:
     has_plt = True
 except ImportError:
     has_plt = False
-import dasslc
-#from dasslc_cy_wrapper import dasslc_wrapper
+import dasslcy
+#from dasslc_cy_wrapper import dasslc
 
 # TODO parei aqui como fazer o setuptools com module unico chamado dasslc apenas ...
 
@@ -93,7 +93,7 @@ print('------- Solve model0  ---------- ')
 t0 = np.array([0.0, 1.0])
 y0 = np.array([1.0])  # ---------------------- Initial condition
 
-t, y, yp = dasslc.solve(model0, t0, y0)  # ---#| The simplest call to dasslc,
+t, y, yp = dasslcy.solve(model0, t0, y0)  # ---#| The simplest call to dasslc,
 #| with all the mandatory inputs and outputs.
 #| y and yp are equally spaced in all time span
 # Plot results
@@ -121,7 +121,7 @@ y0 = np.array([0.0, 1.0])  # ------------------ Initial condition
 # ------------------ Derivatives at initial condition (optional)
 yp0 = np.array([1.0, 0.0])
 
-t, y, yp = dasslc.solve(model1, t0, y0, yp0)  # -- Call with the optional yp0
+t, y, yp = dasslcy.solve(model1, t0, y0, yp0)  # -- Call with the optional yp0
 
 
 # Plot results
@@ -149,7 +149,7 @@ atol = 1e-8  # ----------------------- The absolute tolerance
 rtol = 1e-6  # ----------------------- The relative tolerance
 
 # Call with optional arguments (yp0 = None)
-t, y, yp = dasslc.solve(model2, t0, y0, yp0, par, rtol, atol)
+t, y, yp = dasslcy.solve(model2, t0, y0, yp0, par, rtol, atol)
 
 # Plot results
 if has_plt:
@@ -179,7 +179,7 @@ rtol = 1e-8
 # ---- The dependent variable index vector (needed for high index DAE)
 index = np.array([1, 1, 2, 2, 3])
 
-t, y, yp = dasslc.solve(model3, t0, y0, yp0, par, rtol, atol, index)
+t, y, yp = dasslcy.solve(model3, t0, y0, yp0, par, rtol, atol, index)
 
 # Plot results
 if has_plt:
