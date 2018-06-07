@@ -14,7 +14,9 @@ dasslc_examples.py
 
 ### Prerequisites
 
-- Mingw for Windows with Python3 and C compiler (see [python-mingw]):
+- For windows: msys2 with Python3 and C compiler (see [python-mingw]):
+- For linux: python
+
 
 
 ### Installing
