@@ -9,7 +9,7 @@ And an alternative wrapper based on the Python/C-API wrapper from [dasslc2py](ht
 All the information about the usage of this package can be found in example file
 
 ```
-./tests/dasslc_examples.py
+./tests/dasslc_example.py
 ```
 
 ### Prerequisites

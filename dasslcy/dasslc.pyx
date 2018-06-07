@@ -3,6 +3,8 @@
 #cython: wraparound=False
 
 # TODO Accept np.array([1, 0]) with int and convert to float inside solve function
+# TODO: a version without residual copying
+# TODO: Profile
 
 import numpy as np
 cimport numpy as np
