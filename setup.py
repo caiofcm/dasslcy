@@ -1,29 +1,19 @@
 from setuptools import setup, Extension
-import setuptools.command.build_py
-from setuptools.command.install import install
 from setuptools.command.build_ext import build_ext as build_ext_setuptools
-from setuptools.command.develop import develop
 import subprocess
-#from Cython.Distutils import build_ext
 try:
     from Cython.Distutils import build_ext
+    from Cython.Build import cythonize
 except ImportError:
     USE_CYTHON = False
 else:
     USE_CYTHON = True
-
-
 import numpy as np
-
-# FILE REFERENCED FROM: https://github.com/thearn/simple-cython-example
-
-#TODO: installation without cython for distribution (when the c file is packed)
 
 NAME = "dasslcy"
 VERSION = "0.1"
 DESCR = "A cython wrapper for dasslc"
 URL = "http://www.google.com"
-#REQUIRES = ['numpy', 'cython']
 REQUIRES = ['numpy']
 
 AUTHOR = "Caio Marcellos"
@@ -40,22 +30,15 @@ def download_dasslc():
     print("RUNNING SCRIPT to retrieve dasslc source code")
     subprocess.call(["sh", "./get_dasslc.sh"])
 
-if USE_CYTHON:
-    class BuildExtCommand(build_ext):
-        """Download dasslc source code before installing dasslcy"""
-        def run(self):
-            download_dasslc()
-            build_ext.run(self)
-else:
-    class BuildExtCommand(build_ext_setuptools):
-        """Download dasslc source code before installing dasslcy"""
-        def run(self):
-            download_dasslc()
-            build_ext_setuptools.run(self)
+## Preprocess before building extension
+class BuildExtCommand(build_ext_setuptools):
+    """Download dasslc source code before installing dasslcy"""
+    def run(self):
+        download_dasslc()
+        build_ext_setuptools.run(self)
 
 ### EXTENSION
 ext = '.pyx' if USE_CYTHON else '.c'
-
 ext_1 = Extension(SRC_DIR + ".dasslc",
                   [SRC_DIR + "/dasslc{}".format(ext)] + EXTRA_SOURCES,
                   libraries=[],
@@ -64,10 +47,11 @@ ext_1 = Extension(SRC_DIR + ".dasslc",
 EXTENSIONS = [ext_1]
 
 CMDCLASS = {"build_ext": BuildExtCommand}
-# if USE_CYTHON:
-#     CMDCLASS = {"build_ext": BuildExtCommand}
-# else:
-#     CMDCLASS = {}
+
+if USE_CYTHON:
+    EXTENSIONS = cythonize([ext_1])
+else:
+    EXTENSIONS = [ext_1]
 
 if __name__ == "__main__":
     setup(install_requires=REQUIRES,
