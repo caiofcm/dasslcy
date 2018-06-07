@@ -1,2 +1,1 @@
-dasslcy==0.1
 numpy==1.14.4
