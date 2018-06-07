@@ -1,7 +1,7 @@
 from setuptools import setup, Extension
 import setuptools.command.build_py
 from setuptools.command.install import install
-# from setuptools.command.build_ext import build_ext
+from setuptools.command.build_ext import build_ext as build_ext_setuptools
 from setuptools.command.develop import develop
 import subprocess
 #from Cython.Distutils import build_ext
@@ -36,17 +36,22 @@ PACKAGES = [SRC_DIR]
 
 EXTRA_SOURCES = ["./dasslc_base/dasslc.c"]
 
+def download_dasslc():
+    print("RUNNING SCRIPT to retrieve dasslc source code")
+    subprocess.call(["sh", "./get_dasslc.sh"])
+
 if USE_CYTHON:
     class BuildExtCommand(build_ext):
         """Download dasslc source code before installing dasslcy"""
-
         def run(self):
-            print("RUNNING SCRIPT to retrieve dasslc source code")
-            subprocess.call(["sh", "./get_dasslc.sh"])
+            download_dasslc()
             build_ext.run(self)
-# else:
-#     BuildExtCommand = build_ext
-
+else:
+    class BuildExtCommand(build_ext_setuptools):
+        """Download dasslc source code before installing dasslcy"""
+        def run(self):
+            download_dasslc()
+            build_ext_setuptools.run(self)
 
 ### EXTENSION
 ext = '.pyx' if USE_CYTHON else '.c'
@@ -58,10 +63,11 @@ ext_1 = Extension(SRC_DIR + ".dasslc",
 
 EXTENSIONS = [ext_1]
 
-if USE_CYTHON:
-    CMDCLASS = {"build_ext": BuildExtCommand}
-else:
-    CMDCLASS = {}
+CMDCLASS = {"build_ext": BuildExtCommand}
+# if USE_CYTHON:
+#     CMDCLASS = {"build_ext": BuildExtCommand}
+# else:
+#     CMDCLASS = {}
 
 if __name__ == "__main__":
     setup(install_requires=REQUIRES,
