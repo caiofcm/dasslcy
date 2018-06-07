@@ -1,8 +1,8 @@
 # CFCM
 vscode/
 dasslc_base/
-dasslcy/
-dasslc.c
+# dasslcy/
+# dasslc.c
 venv
 
 # Byte-compiled / optimized / DLL files
