@@ -4,11 +4,13 @@
 
 # TODO Accept np.array([1, 0]) with int and convert to float inside solve function
 # TODO: a version without residual copying
-# TODO: Profile
+# TODO: Estou mudando a posição alocada pelo dasslc do ponteiro res
+# Isso nao está correto. Devo expor o ponteiro res para o python e de lá ele será preenchido...
 
 import numpy as np
 cimport numpy as np
 cimport dasslc_def
+from cpython cimport Py_INCREF
 
 np.import_array()
 
@@ -31,6 +33,8 @@ cdef dasslc_def.BOOL residuals(dasslc_def.PTR_ROOT *root,
     shape[0] = <np.npy_intp>size
     y_np = np.PyArray_SimpleNewFromData(1, shape, np.NPY_DOUBLE, y)
     yp_np = np.PyArray_SimpleNewFromData(1, shape, np.NPY_DOUBLE, yp)
+    Py_INCREF(y_np)
+    Py_INCREF(yp_np)
 
     # Check for extra user arguments
     rpar = None if root.user is NULL else <object>root.user
@@ -45,8 +49,17 @@ cdef dasslc_def.BOOL residuals(dasslc_def.PTR_ROOT *root,
     res_view = return_pyres[0]
 
     # Copying data from python to c at &res[0]
-    for j in range(size):
-        res[j] = res_view[j]
+    #for j in range(size):
+    #    res[j] = res_view[j]
+    res = &res_view[0]
+
+    # print(sizeof(dasslc_def.REAL))
+    #print('yp0;y2={};{}; res0 = {} vs res_np0 = {}'.format(yp[0], y[2], res[0], res_view[0]))
+    print('res0 = {} vs res_np0 = {}'.format(res[0], res_view[0]))
+    #print('res1 = {} vs res_np1 = {}'.format(res[1], res_view[1]))
+    # print('res2 = {} vs res_np2 = {}'.format(res[2], res_view[2]))
+    # print('res3 = {} vs res_np3 = {}'.format(res[3], res_view[3]))
+    
 
     # TODO: Check Possibility to share memory: a long leaving res in the pytho side
     # print('res={} and py_calc_res[0]={}'.format(res[0], res_view[0]))

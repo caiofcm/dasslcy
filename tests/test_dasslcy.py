@@ -2,26 +2,90 @@ import pytest
 import dasslcy
 import numpy as np
 
+global res0
+
+def model0(t, y, yp):  # --------------- Minimum of 3 input arguments
+    # ------------- Always allocate res as a numpy array, even if it has len = 1.
+    res = np.empty(1)
+    res[0] = yp[0] + 2*y[0]  # ------- Declare the residual
+    ires = 0  # ---------------------- Set ires = 0 if everything is ok
+    # -------------- Beware: ires must always be returned as second output.
+    return res, ires
+
+def model0_mod(t, y, yp):  # --------------- Minimum of 3 input arguments
+    # ------------- Always allocate res as a numpy array, even if it has len = 1.
+    #res = np.empty(1)
+    global res0
+    res0[0] = yp[0] + 2*y[0]  # ------- Declare the residual
+    ires = 0  # ---------------------- Set ires = 0 if everything is ok
+    # -------------- Beware: ires must always be returned as second output.
+    return res0, ires
+
+
+def model1(t, y, yp):  # --------------- Just another example
+    res = np.empty(2)
+    res[0] = yp[0]-20*np.cos(20*t)
+    res[1] = yp[1]+20*np.sin(20*t)
+    return res, 0  # ----------------- ires can be a literal
+
+def model1_mod(t, y, yp):  # --------------- Just another example
+    #res = np.empty(2)
+    res1[0] = yp[0]-20*np.cos(20*t)
+    res1[1] = yp[1]+20*np.sin(20*t)
+    return res1, 0  # ----------------- ires can be a literal
+
+def model2(t, y, yp, par):  # ------------- Maximum of 4 input arguments
+    res = np.empty(3)
+
+    k1 = par[0]  # ||||||||||||||||||||||||||||||||||||||||||||||||
+    k2 = par[1]  # |                                              |
+    Ca = y[0]
+    dCa = yp[0]  # --------#| aliasing is optional, but always encoraged   |
+    Cb = y[1]
+    dCb = yp[1]  # |                                              |
+    Cc = y[2]
+    dCc = yp[2]  # ||||||||||||||||||||||||||||||||||||||||||||||||
+
+    res[0] = -k1*Ca - dCa
+    res[1] = k1*Ca - k2*Cb - dCb
+    res[2] = k2*Cb - dCc
+    ires = 0
+    return res, ires
+
+
+def model2_mod(t, y, yp, par):  # ------------- Maximum of 4 input arguments
+    res3 = np.empty(3)
+
+    k1 = par[0]  # ||||||||||||||||||||||||||||||||||||||||||||||||
+    k2 = par[1]  # |                                              |
+    Ca = y[0]
+    dCa = yp[0]  # --------#| aliasing is optional, but always encoraged   |
+    Cb = y[1]
+    dCb = yp[1]  # |                                              |
+    Cc = y[2]
+    dCc = yp[2]  # ||||||||||||||||||||||||||||||||||||||||||||||||
+
+    res3[0] = -k1*Ca - dCa
+    res3[1] = k1*Ca - k2*Cb - dCb
+    res3[2] = k2*Cb - dCc
+    ires = 0
+    return res3, ires
+
 @pytest.fixture()
 def scenario0():
-    def model0(t, y, yp):  # --------------- Minimum of 3 input arguments
-        # ------------- Always allocate res as a numpy array, even if it has len = 1.
-        res = np.empty(1)
-        res[0] = yp[0] + 2*y[0]  # ------- Declare the residual
-        ires = 0  # ---------------------- Set ires = 0 if everything is ok
-        # -------------- Beware: ires must always be returned as second output.
-        return res, ires
     t0 = np.array([0.0, 1.0])
     y0 = np.array([1.0])
     return (model0, t0, y0)
 
+
+@pytest.fixture()
+def scenario0_mod():
+    t0 = np.array([0.0, 1.0])
+    y0 = np.array([1.0])
+    return (model0_mod, t0, y0)
+
 @pytest.fixture()
 def scenario1():
-    def model1(t, y, yp):  # --------------- Just another example
-        res = np.empty(2)
-        res[0] = yp[0]-20*np.cos(20*t)
-        res[1] = yp[1]+20*np.sin(20*t)
-        return res, 0  # ----------------- ires can be a literal
     t0 = np.linspace(0.0, 1.0, 100)
     y0 = np.array([0.0, 1.0])
     # ------------------ Derivatives at initial condition (optional)
@@ -30,24 +94,15 @@ def scenario1():
 
 
 @pytest.fixture()
+def scenario1_mod():
+    t0 = np.linspace(0.0, 1.0, 100)
+    y0 = np.array([0.0, 1.0])
+    # ------------------ Derivatives at initial condition (optional)
+    yp0 = np.array([1.0, 0.0])
+    return (model1_mod, t0, y0)
+
+@pytest.fixture()
 def scenario2():
-    def model2(t, y, yp, par):  # ------------- Maximum of 4 input arguments
-        res = np.empty(3)
-
-        k1 = par[0]  # ||||||||||||||||||||||||||||||||||||||||||||||||
-        k2 = par[1]  # |                                              |
-        Ca = y[0]
-        dCa = yp[0]  # --------#| aliasing is optional, but always encoraged   |
-        Cb = y[1]
-        dCb = yp[1]  # |                                              |
-        Cc = y[2]
-        dCc = yp[2]  # ||||||||||||||||||||||||||||||||||||||||||||||||
-
-        res[0] = -k1*Ca - dCa
-        res[1] = k1*Ca - k2*Cb - dCb
-        res[2] = k2*Cb - dCc
-        ires = 0
-        return res, ires
     t0 = np.array([500.0])
     y0 = np.array([1.0, 0.0, 0.0])
     yp0 = None
@@ -55,6 +110,17 @@ def scenario2():
     atol = 1e-8  # ----------------------- The absolute tolerance
     rtol = 1e-6  # ----------------------- The relative tolerance
     return (model2, t0, y0, yp0, par, rtol, atol)
+
+@pytest.fixture()
+def scenario2_mod():
+    t0 = np.array([500.0])
+    y0 = np.array([1.0, 0.0, 0.0])
+    yp0 = None
+    par = np.array([0.01, 0.02])  # ------- The optional parameter vector
+    atol = 1e-8  # ----------------------- The absolute tolerance
+    rtol = 1e-6  # ----------------------- The relative tolerance
+    return (model2_mod, t0, y0, yp0, par, rtol, atol)
+
 
 @pytest.fixture()
 def scenario3():
@@ -94,6 +160,7 @@ def scenario3():
     index = np.array([1, 1, 2, 2, 3])
     return (model3, t0, y0, yp0, par, rtol, atol, index)
 
+#### tests
 
 def test_scenario0(scenario0):
     t, y, yp = dasslcy.solve(*scenario0)
@@ -114,3 +181,40 @@ def test_scenario3(scenario3):
     t, y, yp = dasslcy.solve(*scenario3)
     y_ref = [0.93226827, -0.36176772, -0.96384619, -2.48381292, 10.64973574]
     assert(np.all(np.isclose(y[-1], y_ref)))
+
+## Modified
+
+
+def test_scenario0_mod(scenario0_mod):
+    t, y, yp = dasslcy.solve(*scenario0_mod)
+    assert(np.isclose(y[-1], 0.1353356))
+
+
+def test_scenario1_mod(scenario1_mod):
+    t, y, yp = dasslcy.solve(*scenario1_mod)
+    assert(np.all(np.isclose(y[-1], [0.91294581, 0.40808469])))
+
+
+def test_scenario2_mod(scenario2_mod):
+    t, y, yp = dasslcy.solve(*scenario2_mod)
+    assert(np.all(np.isclose(y[-1], [0.00673799, 0.00669256, 0.98656945])))
+
+def test_coco():
+    assert(False)
+
+def main():
+    global res0
+    res0 = np.zeros(1)
+    t0 = np.array([0.0, 1.0])
+    y0 = np.array([1.0])
+    args = (model0_mod, t0, y0)
+    t, y, yp = dasslcy.solve(*args)
+    assert(np.isclose(y[-1], 0.1353356))
+
+    res1 = np.zeros(2)
+    res3 = np.zeros(3)
+    
+    pass
+
+if __name__ == '__main__':
+    main()
