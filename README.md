@@ -1,4 +1,4 @@
-# Python3 wrapper for DASSLC using Cython
+# dasslcy: Python3 wrapper for DASSLC using Cython
 
 This is a simple wrapper for using the "Differential-Algebraic System Solver in C" by Argimiro R. Secchi (PEQ/COPPE/UFRJ) in python3 using Cython.
 
@@ -9,15 +9,13 @@ And an alternative wrapper based on the Python/C-API wrapper from [dasslc2py](ht
 All the information about the usage of this package can be found in example file
 
 ```
-dasslc_examples.py
+./tests/dasslc_examples.py
 ```
 
 ### Prerequisites
 
 - For windows: msys2 with Python3 and C compiler (see [python-mingw]):
-- For linux: python
-
-
+- For linux: python3
 
 ### Installing
 
