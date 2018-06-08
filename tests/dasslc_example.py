@@ -22,8 +22,6 @@ except ImportError:
 import dasslcy
 #from dasslc_cy_wrapper import dasslc
 
-# TODO parei aqui como fazer o setuptools com module unico chamado dasslc apenas ...
-
 
 #################################### Defining the residual functions ###############################
 

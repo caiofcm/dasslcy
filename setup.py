@@ -6,6 +6,7 @@ try:
     from Cython.Build import cythonize
 except ImportError:
     USE_CYTHON = False
+    print('CYTHON NOT FOUND: DISTRIBUTING VERSION (USING PROVIDED dasslc.c module source)')
 else:
     USE_CYTHON = True
 import numpy as np

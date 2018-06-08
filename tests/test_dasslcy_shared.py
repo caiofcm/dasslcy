@@ -14,9 +14,9 @@ import numpy as np
 
 @pytest.fixture()
 def scenario0():
-    def model0(t, y, yp):  # --------------- Minimum of 3 input arguments
+    def model0(t, y, yp, res):  # --------------- Minimum of 3 input arguments
         # ------------- Always allocate res as a numpy array, even if it has len = 1.
-        res = np.empty(1)
+        # res = np.empty(1)
         res[0] = yp[0] + 2*y[0]  # ------- Declare the residual
         ires = 0  # ---------------------- Set ires = 0 if everything is ok
         # -------------- Beware: ires must always be returned as second output.
@@ -27,8 +27,8 @@ def scenario0():
 
 @pytest.fixture()
 def scenario1():
-    def model1(t, y, yp):  # --------------- Just another example
-        res = np.empty(2)
+    def model1(t, y, yp, res):  # --------------- Just another example
+        # res = np.empty(2)
         res[0] = yp[0]-20*np.cos(20*t)
         res[1] = yp[1]+20*np.sin(20*t)
         return res, 0  # ----------------- ires can be a literal
@@ -41,8 +41,8 @@ def scenario1():
 
 @pytest.fixture()
 def scenario2():
-    def model2(t, y, yp, par):  # ------------- Maximum of 4 input arguments
-        res = np.empty(3)
+    def model2(t, y, yp, par, res):  # ------------- Maximum of 4 input arguments
+        # res = np.empty(3)
 
         k1 = par[0]  # ||||||||||||||||||||||||||||||||||||||||||||||||
         k2 = par[1]  # |                                              |
@@ -68,8 +68,8 @@ def scenario2():
 
 @pytest.fixture()
 def scenario3():
-    def model3(t, y, yp, par):  # ----------- The parameter may be a whole class
-        res = np.empty(5)
+    def model3(t, y, yp, par, res):  # ----------- The parameter may be a whole class
+        # res = np.empty(5)
         res[0] = yp[0] - y[2]
         res[1] = yp[1] - y[3]
         res[2] = yp[2] + y[4]*y[0]
@@ -104,24 +104,6 @@ def scenario3():
     index = np.array([1, 1, 2, 2, 3])
     return (model3, t0, y0, yp0, par, rtol, atol, index)
 
-#--------------------------------------------
-# 	 CASE SHARING RES MEMORY 	 
-#--------------------------------------------
-
-
-# @pytest.fixture()
-# def scenario1_res_shared(scenario1):
-#     def model1(t, y, yp, res = None):  # --------------- Just another example
-#         res = np.empty(2)
-#         res[0] = yp[0] - 20 * np.cos(20 * t)
-#         res[1] = yp[1] + 20 * np.sin(20 * t)
-#         return res, 0  # ----------------- ires can be a literal
-#     t0 = np.linspace(0.0, 1.0, 100)
-#     y0 = np.array([0.0, 1.0])
-#     # ------------------ Derivatives at initial condition (optional)
-#     yp0 = np.array([1.0, 0.0])
-#     return (model1, t0, y0)
-    
 
 ############################################
 ###########################################
@@ -134,49 +116,24 @@ def scenario3():
 ###########################################
 
 
-def test_scenario0(scenario0):
-    t, y, yp = dasslcy.solve(*scenario0)
+def test_scenario0_shared_res(scenario0):
+    t, y, yp = dasslcy.solve(*scenario0, share_res=1)
     assert(np.isclose(y[-1], 0.1353356))
 
 
-def test_scenario1(scenario1):
-    t, y, yp = dasslcy.solve(*scenario1)
+def test_scenario1_shared_res(scenario1):
+    t, y, yp = dasslcy.solve(*scenario1, share_res=1)
     assert(np.all(np.isclose(y[-1], [0.91294581, 0.40808469])))
 
 
-def test_scenario2(scenario2):
-    t, y, yp = dasslcy.solve(*scenario2)
+def test_scenario2_shared_res(scenario2):
+    t, y, yp = dasslcy.solve(*scenario2, share_res=1)
     assert(np.all(np.isclose(y[-1], [0.00673799, 0.00669256, 0.98656945])))
 
 
-def test_scenario3(scenario3):
-    t, y, yp = dasslcy.solve(*scenario3)
+def test_scenario3_shared_res(scenario3):
+    t, y, yp = dasslcy.solve(*scenario3, share_res=1)
     y_ref = [0.93226827, -0.36176772, -0.96384619, -2.48381292, 10.64973574]
     assert(np.all(np.isclose(y[-1], y_ref, rtol=1e-3)))
-
-
-# #--------------------------------------------
-# # 	 SHARED RES MEMORY 	 
-# #--------------------------------------------
-
-# def test_scenario0_shared_res(scenario0_res_shared):
-#     t, y, yp = dasslcy.solve(*scenario0_res_shared, share_res=1)
-#     assert(np.isclose(y[-1], 0.1353356))
-
-
-# def test_scenario1_shared_res(scenario1_res_shared):
-#     t, y, yp = dasslcy.solve(*scenario1_res_shared, share_res=1)
-#     assert(np.all(np.isclose(y[-1], [0.91294581, 0.40808469])))
-
-
-# def test_scenario2_shared_res(scenario2_res_shared):
-#     t, y, yp = dasslcy.solve(*scenario2_res_shared, share_res=1)
-#     assert(np.all(np.isclose(y[-1], [0.00673799, 0.00669256, 0.98656945])))
-
-
-# def test_scenario3_shared_res(scenario3_res_shared):
-#     t, y, yp = dasslcy.solve(*scenario3_res_shared, share_res=1)
-#     y_ref = [0.93226827, -0.36176772, -0.96384619, -2.48381292, 10.64973574]
-#     assert(np.all(np.isclose(y[-1], y_ref, rtol=1e-3)))
 
 
