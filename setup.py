@@ -28,7 +28,9 @@ EXTRA_SOURCES = ["./dasslc_base/dasslc.c"]
 
 def download_dasslc():
     print("RUNNING SCRIPT to retrieve dasslc source code")
-    subprocess.call(["sh", "./get_dasslc.sh"])
+    # subprocess.call(["sh", "./get_dasslc.sh"])
+    from get_dasslc import get_dasslc
+    get_dasslc()
 
 ## Preprocess before building extension
 class BuildExtCommand(build_ext_setuptools):
