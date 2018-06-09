@@ -8,6 +8,7 @@ except ImportError:
 import dasslcy
 from numba import jit
 
+# TODO: Numba: Use a jitclass for comparison with pfr
 
 class pfr():
     D = 1.0
@@ -146,9 +147,9 @@ def run_solver(N):
     dasslcy.solve(*args)
     return
 
-def run_solver_numba(N):
-    args = setup_solver_numba(N)
-    dasslcy.solve(*args)
+# def run_solver_numba(N):
+#     args = setup_solver_numba(N)
+#     dasslcy.solve(*args)
 
 #--------------------------------------------
 # 	 TIMING FUNCS
