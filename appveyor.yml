@@ -16,7 +16,8 @@ environment:
 
     - PYTHON: "C:\\Python36-x64"
       PYTHON_VERSION: "3.6.5"
-      #PYTHON_ARCH: "32"
+      PYTHON_ARCH: "64"
+      PIP: "C:\\Python36-x64\\Scripts\\pip"
 
 init:
   - "ECHO %PYTHON% %PYTHON_VERSION% "
@@ -29,9 +30,12 @@ install:
 #   - "conda create -q -n test-environment python=%PYTHON_VERSION% numpy scipy pytest"
 #   - activate test-environment
 #   - pip install coverage
-  - pip install -r requirements.txt
-  - pip install pytest
-  - pip install -v .
+#  - pip install -r requirements.txt
+#  - pip install pytest
+#  - pip install -v .
+    - cmd: "%PIP% install -r requirements.txt"
+    - cmd: "%PIP% install -pytest"
+    - cmd: "%PIP% install -v ."
 
 test_script:
   - pytest ./tests/
