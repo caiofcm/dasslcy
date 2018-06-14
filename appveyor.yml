@@ -38,4 +38,4 @@ install:
     - cmd: "%PIP% install -v ."
 
 test_script:
-  - pytest ./tests/
+  - "%PYTHON%/Scripts/pytest ./tests"
