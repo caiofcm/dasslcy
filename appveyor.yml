@@ -34,7 +34,7 @@ install:
 #  - pip install pytest
 #  - pip install -v .
     - cmd: "%PIP% install -r requirements.txt"
-    - cmd: "%PIP% install -pytest"
+    - cmd: "%PIP% install pytest"
     - cmd: "%PIP% install -v ."
 
 test_script:
