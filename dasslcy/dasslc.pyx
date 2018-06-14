@@ -13,9 +13,9 @@ np.import_array()
 cdef object pyres
 cdef int SHARED_RES_MEM = 0
 
-cdef dasslc_def.BOOL residuals(dasslc_def.PTR_ROOT *root, 
-                                dasslc_def.REAL t, dasslc_def.REAL *y, 
-                                dasslc_def.REAL *yp, dasslc_def.REAL *res, 
+cdef dasslc_def.BOOL residuals(dasslc_def.PTR_ROOT *root,
+                                dasslc_def.REAL t, dasslc_def.REAL *y,
+                                dasslc_def.REAL *yp, dasslc_def.REAL *res,
                                 dasslc_def.BOOL *jac):
     cdef:
         np.npy_intp shape[1]
@@ -55,12 +55,12 @@ cdef dasslc_def.BOOL residuals(dasslc_def.PTR_ROOT *root,
         res_view = return_pyres[0]
         for j in range(size):
             res[j] = res_view[j]
-        
+
     ires = <int> return_pyres[1]
     return ires
 
-def solve(resfun, np.float64_t[:] tspan, np.float64_t[:] y0, 
-                    np.float64_t[:] yp0 = None, rpar=None, rtol=1e-6, 
+def solve(resfun, np.float64_t[:] tspan, np.float64_t[:] y0,
+                    np.float64_t[:] yp0 = None, rpar=None, rtol=1e-6,
                     atol=1e-8, index=None, int share_res = 0): #, np.int_t[:] index=None
     global pyres
     global SHARED_RES_MEM
@@ -106,10 +106,10 @@ def solve(resfun, np.float64_t[:] tspan, np.float64_t[:] y0,
         yp_ptr = &yp0[0]
 
     SHARED_RES_MEM = share_res
-    
+
     # Setup dasslc:
     t0 = tspan[0] if ntp > 1 else 0.0
-    err = dasslc_def.daSetup("?",&root, residuals, neq, 
+    err = dasslc_def.daSetup("?",&root, residuals, neq,
                                 t0, &y0[0], yp_ptr, index_ptr, NULL, NULL)
     if err > 0:
         print('Setup error here')
@@ -132,7 +132,7 @@ def solve(resfun, np.float64_t[:] tspan, np.float64_t[:] y0,
 
     # Find initial derivatives if not given
     if yp0 is None:
-        err = dasslc_def.dasslc(dasslc_def.INITIAL_COND, &root, 
+        err = dasslc_def.dasslc(dasslc_def.INITIAL_COND, &root,
                                 residuals, &t0, tf, NULL, NULL)
         if (err < 0):
             error = "Failed in finding consistent initial condition. Error: {}".format(err)
