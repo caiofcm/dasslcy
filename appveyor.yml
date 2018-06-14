@@ -27,7 +27,7 @@ install:
 #   - pip install coverage
   - pip install -r requirements.txt
   - pip install pytest
-  - pip install .
+  - pip install -v .
 
 test_script:
   - pytest ./tests/
