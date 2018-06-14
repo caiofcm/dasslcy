@@ -26,6 +26,7 @@ install:
 #   - activate test-environment
 #   - pip install coverage
   - pip install -r requirements.txt
+  - pip install pytest
   - pip install .
 
 test_script:
