@@ -4,6 +4,7 @@ dasslc_base/
 # dasslcy/
 # dasslc.c
 venv
+/**/*.ipynb_checkpoints
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
